@@ -2,17 +2,105 @@
 title: Cards
 description: Group related content to improve scanning and navigation.
 ---
-
 # Cards
 
 Cards group related content and help users scan key information quickly.
 
 ## Example
 
-<Card title="Quickstart" icon="zap" href="/quickstart">
+<Card title="Quickstart" href="/quickstart" icon="zap" horizontal="false">
   Get up and running in a few minutes.
 </Card>
 
 ## Learn more
 
-Read the full Card guide at https://documentation.ai/docs/components/card.
+Read the full Card guide at [https://documentation.ai/docs/components/card](https://documentation.ai/docs/components/card).
+
+
+
+```mermaid
+---
+config:
+  theme: neutral
+  layout: elk
+title: LAIKA - Concept (Design) - Individual Workflow
+---
+flowchart TD
+
+    %% =================== CONCEPT OBJECT ===================
+    subgraph "🧊︎ Concept (Sub-object)"
+        %% Start Event
+        CPT_START(["Auto-created with Design"])
+        
+        %% Data Object
+        CPT_DATA[("🧊︎ Concept")]
+        
+        %% Status Nodes
+        CPT_1ST_DRAFT("1ST DRAFT")
+        CPT_SALES_REVIEW("SALES REVIEW")
+        CPT_CUSTOMER_REVIEW("CUSTOMER REVIEW")
+        CPT_APPROVED("APPROVED")
+        CPT_2ND_REVISION("2ND REVISION")
+        CPT_ARCHIVED("ARCHIVED")
+        
+        %% Gateways
+        CPT_GW_SALES{"Sales<br/>Approved?"}
+        CPT_GW_CUST{"Customer<br/>Approved?"}
+        
+        %% End Event
+        CPT_END(["Design Locked"])
+        
+        %% Internal Flows
+        CPT_START --> CPT_1ST_DRAFT
+        CPT_1ST_DRAFT -- "Complete Sketch" --> CPT_SALES_REVIEW
+        CPT_SALES_REVIEW --> CPT_GW_SALES
+        
+        %% Sales Loop
+        CPT_GW_SALES -- "Internal Feedback" --> CPT_1ST_DRAFT
+        CPT_GW_SALES -- "Looks Good" --> CPT_CUSTOMER_REVIEW
+        
+        %% Customer Loop
+        CPT_CUSTOMER_REVIEW --> CPT_GW_CUST
+        CPT_GW_CUST -- "Request Changes" --> CPT_2ND_REVISION
+        CPT_GW_CUST -- "Approve Design" --> CPT_APPROVED
+        
+        %% Revision Loop
+        CPT_2ND_REVISION -- "Update Design" --> CPT_1ST_DRAFT
+        
+        %% Finalize
+        CPT_APPROVED --> CPT_END
+        
+        %% Archive path
+        CPT_1ST_DRAFT -.-> |"Discard"| CPT_ARCHIVED
+    end
+
+    %% =================== AUTOMATION TRIGGERS ===================
+    %% 1. Input Trigger
+    DSG_TRIGGER(["Input: Design Object Created"]) -.-> CPT_START
+    
+    %% 2. Output Notifications
+    EXT_NOTIFY_SALES(["🔔 Notify Sales Rep (Internal)"])
+    EXT_EMAIL_CUST(["📧 Email Customer (External)"])
+    
+    %% Flows: Automation Logic
+    CPT_SALES_REVIEW L_MF1@-.-> |"Auto-notify David"| EXT_NOTIFY_SALES
+    CPT_CUSTOMER_REVIEW L_MF2@-.-> |"Action: Send Email w/ Link"| EXT_EMAIL_CUST
+
+    %% =================== ANIMATIONS ===================
+    L_MF1@{ animate: fast, stroke: "#FF7E46" }
+    L_MF2@{ animate: fast, stroke: "#FF7E46" }
+
+    %% =================== STYLING ===================
+    classDef mo fill:#F8F9FA,stroke:#64718B,stroke-width:2px,color:#213459
+    classDef hoatdong fill:#E8F4FF,stroke:#358AFF,stroke-width:2px,color:#213459
+    classDef tamdung fill:#FFF7ED,stroke:#FF7E46,stroke-width:2px,color:#213459
+    classDef hoanthanh fill:#E8FDF4,stroke:#1AD598,stroke-width:2px,color:#213459
+    classDef donghuy fill:#F8F9FA,stroke:#213459,stroke-width:2px,color:#213459
+    
+    class CPT_1ST_DRAFT mo
+    class CPT_SALES_REVIEW,CPT_CUSTOMER_REVIEW hoatdong
+    class CPT_2ND_REVISION tamdung
+    class CPT_APPROVED hoanthanh
+    class CPT_ARCHIVED donghuy
+```
+
