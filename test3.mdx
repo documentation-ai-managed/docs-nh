@@ -1,0 +1,89 @@
+---
+title: "Luồng Quy trình Liên phòng ban Tổng thể"
+description: "Bản đồ trực quan hóa sự kết nối giữa các bộ phận trong hệ sinh thái LAIKA."
+type: "reference"
+---
+
+## Sơ đồ Tổng quan (Mermaid Flowchart)
+
+Sơ đồ dưới đây chia doanh nghiệp thành 3 "Động cơ" chính:
+1.  **Revenue Engine (Màu xanh dương):** Kiếm tiền (Marketing ↔ Sales).
+2.  **Delivery Engine (Màu cam/vàng):** Thực hiện lời hứa (Dự án ↔ Thiết kế ↔ Mua hàng ↔ Kế toán).
+3.  **People & Ops Engine (Màu xanh lá):** Hậu cần (Nhân sự ↔ Tài sản).
+
+```mermaid
+graph TD
+    %% Định nghĩa Nodes (Đối tượng)
+    subgraph MKT [MARKETING AREA]
+        Camp[Chiến dịch / Campaign]
+        Webform[Webform]
+    end
+
+    subgraph SALE [SALES & CRM AREA]
+        Deal[Cơ hội / Deal]
+        Quote[Báo giá / Quote]
+        Cust[Khách hàng / Customer]
+    end
+
+    subgraph PROJ [PRODUCT DELIVERY AREA]
+        Proj[Dự án / Master Project]
+        Design[Thiết kế / Design]
+        Const[Thi công / Construction]
+        Site[Khảo sát / Site Check]
+    end
+
+    subgraph FIN [ACCOUNTING AREA]
+        Inv[Hóa đơn / Invoice]
+        Cont[Hợp đồng / Contract]
+    end
+
+    subgraph PUR [PROCUREMENT AREA]
+        PO[Đơn mua / Purchase Order]
+    end
+
+    subgraph SUP [SUPPORT AREA]
+        Ticket[Khiếu nại / Ticket]
+        Bug[Lỗi / Bug]
+    end
+
+    subgraph HRM [HR & ASSET AREA]
+        Cand[Ứng viên / Candidate]
+        Emp[Nhân viên / Employee]
+        Asset[Tài sản / Asset]
+    end
+
+    %% --- LUỒNG REVENUE ENGINE ---
+    Webform -->|CS-01: Tự động tạo| Cust
+    Cust --> Deal
+    Deal -->|CF-01: Đồng bộ Doanh thu ROI| Camp
+    Deal -->|CF-02: Project Kickoff| Proj
+    Deal -.->|CF-02: Tạo Hợp đồng| Cont
+    Quote -->|CF-03: Duyệt báo giá -> Tạo đơn mua| PO
+
+    %% --- LUỒNG DELIVERY ENGINE ---
+    Proj -->|Tự động tạo| Design
+    Design -->|Duyệt thiết kế| Const
+    
+    %% Billing Loop
+    Proj -->|CF-04: Xong giai đoạn| Inv
+    Inv -.->|CF-06: Xác nhận thanh toán| Proj
+    
+    %% Costing Loop
+    PO -->|CF-11: Phân bổ chi phí vật tư| Proj
+
+    %% Feedback Loop
+    Site -->|CF-05: Báo thiếu vật tư| PO
+    Site -->|CF-05: Báo lỗi hiện trường| Ticket
+    Bug -->|CF-08: Xác nhận lỗi -> Tạo việc| Site
+
+    %% --- LUỒNG PEOPLE ENGINE ---
+    Cand -->|CF-09: Tuyển dụng thành công| Emp
+    Emp -->|CF-10: Nghỉ việc -> Thu hồi| Asset
+    Asset -.->|Cấp phát| Emp
+
+    %% Style
+    linkStyle default stroke:#666,stroke-width:2px;
+    style Deal fill:#bbdefb,stroke:#1565c0
+    style Proj fill:#ffe0b2,stroke:#ef6c00
+    style Inv fill:#c8e6c9,stroke:#2e7d32
+    style Emp fill:#e1bee7,stroke:#6a1b9a
