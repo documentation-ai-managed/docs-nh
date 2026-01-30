@@ -20,6 +20,18 @@
             "icon": "rocket",
             "pages": [
               {
+                "title": "h3",
+                "path": "h3"
+              },
+              {
+                "title": "h2",
+                "path": "h2"
+              },
+              {
+                "title": "hi",
+                "path": "hi"
+              },
+              {
                 "title": "Introduction",
                 "path": "introduction",
                 "icon": "home"

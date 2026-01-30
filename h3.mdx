@@ -1,0 +1,166 @@
+---
+title: "Cấu trúc Tổ chức LAIKA"
+description: "Sơ đồ phân cấp toàn bộ hệ thống quản trị doanh nghiệp tổng thể."
+type: "reference"
+---
+
+## Tổng quan hệ thống
+
+Hệ thống LAIKA được chia thành **8 Khu vực chức năng (Areas)** chuyên biệt, bao phủ toàn bộ vòng đời vận hành doanh nghiệp.
+
+<Callout kind="info">
+  Mỗi **Khu vực (Area)** chứa các **Không gian làm việc (Spaces)**. Bên trong Không gian là các **Đối tượng (Objects)** cụ thể để lưu trữ dữ liệu.
+</Callout>
+
+## 1. Marketing & Kinh doanh (Growth)
+
+Khu vực chịu trách nhiệm mang về doanh thu, từ việc thu hút khách hàng tiềm năng đến khi chốt hợp đồng.
+
+<Columns cols="2">
+  <Card title="Marketing Campaigns" icon="megaphone" href="#marketing" horizontal="false">
+    Quản lý chiến dịch và nguồn khách.
+    
+    - 🧊 **Campaign** (Chiến dịch)
+    - 🧊 **Ad** (Quảng cáo)
+    - 🧊 **Event** (Sự kiện)
+  </Card>
+
+  <Card title="Sales & CRM" icon="trending-up" href="#sales" horizontal="false">
+    Quản lý quy trình bán hàng.
+
+    - 🧊 **Customer** (Khách hàng)
+    - 🧊 **Deal** (Cơ hội / Deal)
+    - 🧊 **Quote** (Báo giá)
+  </Card>
+</Columns>
+
+## 2. Triển khai Sản phẩm (Delivery)
+
+"Công xưởng" của doanh nghiệp, nơi biến hợp đồng thành sản phẩm thực tế.
+
+<Columns cols="3">
+  <Card title="Project Management" icon="trello" href="#pm" horizontal="false">
+    Điều phối tổng thể dự án.
+    
+    * 🧊 **Master Project**
+    * 🧊 **Roadmap**
+  </Card>
+
+  <Card title="Design" icon="pen-tool" href="#design" horizontal="false">
+    Quản lý hồ sơ thiết kế.
+    
+    * 🧊 **Design Package**
+    * 🧊 **2D / 3D / Concept**
+  </Card>
+
+  <Card title="Production" icon="hammer" href="#construction" horizontal="false">
+    Thi công & Lắp đặt.
+    
+    * 🧊 **Site Check**
+    * 🧊 **Construction**
+  </Card>
+</Columns>
+
+## 3. Tài chính & Kế toán (Back Office)
+
+Hệ thống kiểm soát dòng tiền và tài sản.
+
+<ExpandableGroup>
+  <Expandable title="Chi tiết các Không gian Tài chính" default-open="true">
+    <Columns cols="2">
+      <Card title="Contract & Invoice" icon="file-text" href="#contract" horizontal="true">
+        Quản lý **Hợp đồng**, **Hóa đơn**, và **Phiếu thu**.
+      </Card>
+      
+      <Card title="Expense Tracker" icon="pie-chart" href="#expense" horizontal="true">
+        Kiểm soát **Chi phí** và các đợt mua sắm.
+      </Card>
+      
+      <Card title="Salary Payment" icon="dollar-sign" href="#salary" horizontal="true">
+        Xử lý **Tạm ứng** và **Thanh toán lương**.
+      </Card>
+      
+      <Card title="Banking" icon="credit-card" href="#bank" horizontal="true">
+        Quản lý **Tài khoản ngân hàng** và **Dòng tiền**.
+      </Card>
+    </Columns>
+  </Expandable>
+</ExpandableGroup>
+
+## 4. Con người & Văn hóa (HRM)
+
+Quản lý trọn vẹn vòng đời nhân sự.
+
+<Columns cols="2">
+  <Card title="Tuyển dụng (Recruitment)" icon="user-plus" href="#recruitment" horizontal="false">
+    Quản lý **Vị trí tuyển dụng** và **Hồ sơ ứng viên (Candidate)**.
+  </Card>
+
+  <Card title="Hồ sơ nhân sự (HRM)" icon="users" href="#hrm" horizontal="false">
+    Lưu trữ **Hồ sơ nhân viên**, **Hợp đồng**, và **Quyết định lương**.
+  </Card>
+
+  <Card title="Chấm công (Time & Attendance)" icon="clock" href="#time" horizontal="false">
+    Xử lý **Đơn xin nghỉ**, **Tăng ca**, và **Bảng công**.
+  </Card>
+
+  <Card title="Cơ cấu tổ chức (Directory)" icon="git-merge" href="#org" horizontal="false">
+    Cây sơ đồ **Phòng ban**, **Đội nhóm**, và **Chức danh**.
+  </Card>
+</Columns>
+
+## 5. Vận hành & Hỗ trợ (Support & Ops)
+
+Các bộ phận hỗ trợ hoạt động kinh doanh cốt lõi.
+
+<Tabs>
+  <Tab title="Mua hàng (Procurement)" icon="shopping-cart">
+    **Không gian: Supplier & Purchasing**
+    
+    Nơi quản lý chuỗi cung ứng:
+    * 🧊 **Supplier** (Nhà cung cấp)
+    * 🧊 **Purchase Order** (Đơn đặt hàng - PO)
+    * 🧊 **Item Category** (Danh mục vật tư)
+  </Tab>
+
+  <Tab title="CSKH (Customer Support)" icon="life-buoy">
+    **Không gian: Customer Support**
+    
+    Nơi tiếp nhận phản hồi:
+    * 🧊 **Ticket** (Khiếu nại / Hỗ trợ)
+    * 🧊 **Bugs** (Báo lỗi sản phẩm)
+    * 🧊 **After Care** (Chăm sóc sau bán)
+  </Tab>
+
+  <Tab title="Văn phòng (Office Ops)" icon="monitor">
+    **Không gian: Asset & Intranet**
+    
+    * 🧊 **Asset** (Quản lý cấp phát tài sản)
+    * 🧊 **Announcement** (Thông báo nội bộ)
+    * 🧊 **Internal Event** (Sự kiện)
+  </Tab>
+</Tabs>
+
+## 6. Không gian làm việc chéo (Workspaces)
+
+Các "phòng họp ảo" nơi nhiều bộ phận cùng phối hợp.
+
+<Columns cols="3">
+  <Card title="Revenue Ops" icon="rocket" href="#rev-ops" horizontal="false">
+    **Marketing + Sales**
+    
+    Đồng bộ dữ liệu từ Lead đến Doanh thu.
+  </Card>
+
+  <Card title="Project Command" icon="briefcase" href="#project-cmd" horizontal="false">
+    **PM + Thiết kế + Kế toán**
+    
+    Điều hành dự án toàn diện 360 độ.
+  </Card>
+
+  <Card title="Onboarding" icon="user-check" href="#onboarding" horizontal="false">
+    **HR + IT + Finance**
+    
+    Quy trình tiếp nhận nhân sự mới siêu tốc.
+  </Card>
+</Columns>
