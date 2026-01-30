@@ -24,8 +24,18 @@
             "icon": "rocket",
             "pages": [
               {
-                "title": "test3",
-                "path": "test3"
+                "group": "Group",
+                "pages": [
+                  {
+                    "title": "test3",
+                    "path": "test3"
+                  }
+                ],
+                "icon": "alarm-smoke-icon"
+              },
+              {
+                "title": "222",
+                "path": "222"
               },
               {
                 "title": "test 2",
