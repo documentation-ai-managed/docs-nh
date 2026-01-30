@@ -27,6 +27,10 @@
                 "group": "Group",
                 "pages": [
                   {
+                    "title": "4",
+                    "path": "4"
+                  },
+                  {
                     "title": "test3",
                     "path": "test3"
                   }
