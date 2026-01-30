@@ -1,0 +1,167 @@
+---
+title: "Workflow Chi tiết: Đối tượng Customer"
+description: "Quy trình vòng đời khách hàng từ Tiếp nhận (Lead) đến Chuyển đổi và Chăm sóc sau bán."
+type: "guide"
+---
+
+## Tổng quan Quy trình
+
+Đối tượng **Customer** đóng vai trò trung tâm trong giải pháp LAIKA. Workflow này không chỉ quản lý trạng thái, mà còn kích hoạt các đối tượng con liên quan như **Deal** (Cơ hội), **Contract** (Hợp đồng) và **Project** (Dự án).
+
+### Các trạng thái dữ liệu (Status Lifecycle)
+
+<Columns cols="2">
+  <Card title="Giai đoạn 1: Tiếp nhận" icon="inbox" horizontal="false">
+    - **Mới (New):** Vừa được tạo từ Webform hoặc nhập tay.
+    - **Đang tiếp cận (Contacting):** Sales đã nhận và bắt đầu liên hệ.
+  </Card>
+
+  <Card title="Giai đoạn 2: Phân loại" icon="filter" horizontal="false">
+    - **Tiềm năng (Qualified):** Có nhu cầu thực tế, đủ ngân sách.
+    - **Không phù hợp (Disqualified):** Sai đối tượng hoặc spam.
+  </Card>
+
+  <Card title="Giai đoạn 3: Chuyển đổi" icon="briefcase" horizontal="false">
+    - **Đang giao dịch (In Deal):** Đang có ít nhất 1 Deal mở.
+    - **Khách hàng (Won):** Đã ký hợp đồng ít nhất 1 lần.
+  </Card>
+
+  <Card title="Giai đoạn 4: Hậu mãi" icon="star" horizontal="false">
+    - **VIP / Thân thiết:** Khách hàng quay lại hoặc giá trị cao.
+    - **Ngủ đông (Lost/Churn):** Không còn tương tác lâu ngày.
+  </Card>
+</Columns>
+
+## Sơ đồ luồng (Flowchart)
+
+Dưới đây là sơ đồ Mermaid mô tả luồng di chuyển trạng thái và các điểm chạm tự động hóa.
+
+```mermaid
+graph TD
+    %% Nodes
+    Start((Bắt đầu))
+    S1[Mới / New]
+    S2[Đang tiếp cận / Contacting]
+    S3{Đánh giá Lead?}
+    S4[Tiềm năng / Qualified]
+    S5[Không phù hợp / Disqualified]
+    S6[Đang giao dịch / In Deal]
+    S7{Kết quả Deal?}
+    S8[Khách hàng / Won]
+    S9[Thất bại / Lost]
+    S10[VIP / Loyal]
+
+    %% Automation Nodes
+    Auto1[[Webform Catch]]
+    Auto2[[Auto-Reclaim 2h]]
+    Auto3[[Auto-Create Deal]]
+    Auto4[[Sync Contract]]
+
+    %% Flow
+    Start --> Auto1
+    Auto1 -->|Tự động tạo| S1
+    S1 -->|Sales bấm nhận| S2
+    S2 -.->|Không gọi sau 2h| Auto2
+    Auto2 -.->|Thu hồi| S1
+    
+    S2 -->|Gọi điện & Xác thực| S3
+    S3 -- Sai đối tượng --> S5
+    S3 -- Có nhu cầu --> S4
+    
+    S4 -->|Tạo cơ hội| Auto3
+    Auto3 --> S6
+    
+    S6 --> S7
+    S7 -- Deal Thua --> S9
+    S7 -- Deal Thắng --> Auto4
+    Auto4 -->|Ký HĐ| S8
+    
+    S8 -->|Tích lũy doanh số > 500tr| S10
+
+    %% Styles
+    style Start fill:#f9f,stroke:#333,stroke-width:2px
+    style Auto1 fill:#e1f5fe,stroke:#01579b
+    style Auto2 fill:#ffebee,stroke:#b71c1c
+    style Auto3 fill:#e1f5fe,stroke:#01579b
+    style Auto4 fill:#e1f5fe,stroke:#01579b
+    style S8 fill:#c8e6c9,stroke:#2e7d32
+    style S10 fill:#fff9c4,stroke:#fbc02d
+
+```
+
+## Chi tiết các bước thực hiện
+
+<Steps>
+<Step title="Bước 1: Tiếp nhận Lead (Acquisition)" icon="download" title-type="h3">
+Khách hàng đi vào hệ thống từ nhiều nguồn (Website, Facebook, Giới thiệu).
+
+```
+- **Hành động:** Hệ thống tự động bắt Lead qua Automation `CS-01 Webform Catch`.
+- **Quy tắc 2 giờ:** Nếu trạng thái "Mới" giữ nguyên quá 2 giờ, Automation `IC-10` sẽ thu hồi Lead về kho chung để người khác xử lý.
+
+```
+
+</Step>
+
+<Step title="Bước 2: Sàng lọc & Tư vấn (Qualification)" icon="phone-call" title-type="h3">
+Sales sử dụng tính năng **Click-to-Call** để liên hệ.
+
+```
+- **Hành động:** Cập nhật trạng thái sang "Đang tiếp cận".
+- **Công cụ hỗ trợ:** Sử dụng **AI Call Intel** để tóm tắt nội dung cuộc gọi và đánh giá mức độ tiềm năng.
+- **Kết quả:** Nếu khách quan tâm, chuyển sang bước tiếp theo. Nếu spam, đánh dấu "Không phù hợp".
+
+```
+
+</Step>
+
+<Step title="Bước 3: Tạo cơ hội bán hàng (Deal Creation)" icon="plus-circle" title-type="h3">
+Khi khách hàng có nhu cầu cụ thể (ví dụ: Thiết kế căn hộ 2PN), Sales sẽ tạo một **Deal** (Cơ hội) gắn với khách hàng này.
+
+```
+- **Trạng thái Khách hàng:** Tự động chuyển sang "Đang giao dịch".
+- **Lưu ý:** Một khách hàng có thể có nhiều Deal tại các thời điểm khác nhau.
+
+```
+
+</Step>
+
+<Step title="Bước 4: Chốt hợp đồng (Closing)" icon="file-signature" title-type="h3">
+Khi Deal thành công (`Won`), hệ thống kích hoạt chuỗi automation liên phòng ban `CF-02 Project Kickoff`.
+
+```
+- **Hành động hệ thống:**
+  1. Tạo **Hợp đồng** bên Kế toán.
+  2. Tạo **Dự án (Master Project)** bên Triển khai.
+- **Trạng thái Khách hàng:** Chuyển sang "Khách hàng (Won)".
+
+```
+
+</Step>
+
+<Step title="Bước 5: Chăm sóc & Nâng hạng (Retention)" icon="gift" title-type="h3">
+Sau khi dự án hoàn thành, bộ phận CSKH tiếp quản.
+
+```
+- **Hành động:** Gửi khảo sát NPS và quà tặng.
+- **Nâng hạng:** Nếu tổng giá trị các Hợp đồng > 500 triệu, hệ thống tự động gắn thẻ **VIP** và gửi Voucher tri ân.
+
+```
+
+</Step>
+</Steps>
+
+## Dữ liệu liên quan (Related Objects)
+
+Để workflow này hoạt động trơn tru, đối tượng **Customer** cần liên kết dữ liệu với các đối tượng khác như sau:
+
+| Đối tượng liên quan | Loại liên kết | Mục đích kinh doanh |
+| --- | --- | --- |
+| **Marketing Campaign** | Nguồn (Source) | Để biết khách hàng này đến từ quảng cáo nào (Tính ROI Marketing). |
+| **Deal** | Con (Child) | Để quản lý từng cơ hội bán hàng riêng biệt (Mỗi lần mua là 1 Deal). |
+| **Contract** | Tham chiếu | Để tính tổng doanh số tích lũy của khách hàng (Tính hạng VIP). |
+| **Ticket** | Con (Child) | Để xem lịch sử khiếu nại của khách hàng ngay trên hồ sơ. |
+
+<Callout kind="success">
+**Mẹo quản trị:** Hãy sử dụng **Workview "My Active Customers"** để Sales chỉ nhìn thấy những khách hàng họ đang phụ trách, tránh việc tranh chấp khách hàng (Trùng Lead).
+</Callout>

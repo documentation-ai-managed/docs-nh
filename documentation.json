@@ -24,6 +24,10 @@
             "icon": "rocket",
             "pages": [
               {
+                "title": "test 1",
+                "path": "test-1"
+              },
+              {
                 "title": "h3",
                 "path": "h3"
               },
