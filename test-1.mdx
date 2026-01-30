@@ -169,79 +169,82 @@ graph TD
 ```mermaid wrap="true"
 flowchart TD
 
-    %% =================== NODES DEFINITION ===================
-    
-    %% --- Start ---
-    Start(("Bắt đầu"))
+    %% =================== ROOT CONTAINER (White Background) ===================
+    %% Bọc toàn bộ graph vào trong subgraph này để tạo nền trắng
+    subgraph Root [" "]
+        direction TD
 
-    %% --- Status Nodes (Human Steps) ---
-    S1("Mới / New")
-    S2("Đang tiếp cận / Contacting")
-    S3{"Đánh giá Lead?"}
-    S4("Tiềm năng / Qualified")
-    S5("Không phù hợp / Disqualified")
-    S6("Đang giao dịch / In Deal")
-    S7{"Kết quả Deal?"}
-    S8("Khách hàng / Won")
-    S9("Thất bại / Lost")
-    S10("VIP / Loyal")
+        %% =================== NODES DEFINITION ===================
+        
+        %% --- Start ---
+        Start(("BẮT ĐẦU"))
 
-    %% --- Automation Nodes (System Steps) ---
-    %% Dùng shape [[ ]] để biểu thị Subroutine/Automation
-    Auto1[["⚡ Webform Catch"]]
-    Auto2[["⚡ Auto-Reclaim 2h"]]
-    Auto3[["⚡ Auto-Create Deal"]]
-    Auto4[["⚡ Sync Contract"]]
+        %% --- Status Nodes (Human Steps) ---
+        S1("MỚI / NEW")
+        S2("ĐANG TIẾP CẬN / CONTACTING")
+        S3{"ĐÁNH GIÁ LEAD?"}
+        S4("TIỀM NĂNG / QUALIFIED")
+        S5("KHÔNG PHÙ HỢP / DISQUALIFIED")
+        S6("ĐANG GIAO DỊCH / IN DEAL")
+        S7{"KẾT QUẢ DEAL?"}
+        S8("KHÁCH HÀNG / WON")
+        S9("THẤT BẠI / LOST")
+        S10("VIP / LOYAL")
 
-    %% =================== FLOWS ===================
+        %% --- Automation Nodes (System Steps) ---
+        Auto1[["⚡ Webform Catch"]]
+        Auto2[["⚡ Auto-Reclaim 2h"]]
+        Auto3[["⚡ Auto-Create Deal"]]
+        Auto4[["⚡ Sync Contract"]]
 
-    Start --> Auto1
-    
-    %% Auto Flow
-    Auto1 -.-> |"Tự động tạo"| S1
-    
-    %% Human Action
-    S1 -- "Sales bấm nhận" --> S2
-    
-    %% Loop / Automation Logic
-    S2 -.-> |"Timeout: 2h"| Auto2
-    Auto2 -.-> |"Thu hồi Lead"| S1
-    
-    %% Qualification
-    S2 -- "Gọi điện & Xác thực" --> S3
-    S3 -- "Sai đối tượng" --> S5
-    S3 -- "Có nhu cầu" --> S4
-    
-    %% Automation Trigger
-    S4 -.-> |"Trigger"| Auto3
-    Auto3 -.-> |"System Action"| S6
-    
-    %% Negotiation
-    S6 --> S7
-    S7 -- "Deal Thua" --> S9
-    S7 -- "Deal Thắng" --> Auto4
-    
-    %% Closing
-    Auto4 -.-> |"Ký Hợp Đồng"| S8
-    S8 -- "Doanh số > 500tr" --> S10
+        %% =================== FLOWS ===================
+
+        Start --> Auto1
+        
+        %% Auto Flow
+        Auto1 -.-> |"Tự động tạo"| S1
+        
+        %% Human Action
+        S1 -- "Sales bấm nhận" --> S2
+        
+        %% Loop / Automation Logic
+        S2 -.-> |"Timeout: 2h"| Auto2
+        Auto2 -.-> |"Thu hồi Lead"| S1
+        
+        %% Qualification
+        S2 -- "Gọi điện & Xác thực" --> S3
+        S3 -- "Sai đối tượng" --> S5
+        S3 -- "Có nhu cầu" --> S4
+        
+        %% Automation Trigger
+        S4 -.-> |"Trigger"| Auto3
+        Auto3 -.-> |"System Action"| S6
+        
+        %% Negotiation
+        S6 --> S7
+        S7 -- "Deal Thua" --> S9
+        S7 -- "Deal Thắng" --> Auto4
+        
+        %% Closing
+        Auto4 -.-> |"Ký Hợp Đồng"| S8
+        S8 -- "Doanh số > 500tr" --> S10
+    end
 
     %% =================== STYLING ===================
 
+    %% Style cho Root Container (Nền trắng, viền xám nhẹ)
+    style Root fill:#FFFFFF,stroke:#E2E8F0,stroke-width:2px,rx:10,ry:10
+
     %% 1. Định nghĩa Class
-    %% Status Colors (Standard Luklak Palette)
     classDef mo fill:#F8F9FA,stroke:#64718B,stroke-width:2px,color:#213459
     classDef hoatdong fill:#E8F4FF,stroke:#358AFF,stroke-width:2px,color:#213459
     classDef hoanthanh fill:#E8FDF4,stroke:#1AD598,stroke-width:2px,color:#213459
     classDef donghuy fill:#F8F9FA,stroke:#213459,stroke-width:2px,color:#213459
     
-    %% VIP Class (Gold/Yellow)
     classDef vip fill:#FFF9C4,stroke:#FBC02D,stroke-width:2px,color:#213459
     
-    %% AUTOMATION CLASS (Distinct Purple Style)
-    %% Màu tím nhạt nền, viền tím đậm, chữ tím đậm để nổi bật đây là SYSTEM làm
     classDef automation fill:#F3E5F5,stroke:#9C27B0,stroke-width:2px,stroke-dasharray: 5 5,color:#4A148C
 
-    %% Start/Gateway
     classDef gateway fill:#FFFFFF,stroke:#333,stroke-width:2px
 
     %% 2. Áp dụng Class
@@ -253,7 +256,6 @@ flowchart TD
     
     class S3,S7 gateway
     
-    %% Apply Automation Class
     class Auto1,Auto2,Auto3,Auto4 automation
 
 ```
