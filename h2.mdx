@@ -194,3 +194,37 @@ class VEH_TD tamdung
 class VEH_DH donghuy
 ```
 
+```mermaid
+graph TD
+    %% Định nghĩa các Subgraph cho các phòng ban
+    subgraph "PHÒNG KINH DOANH (Object: Đơn hàng)"
+        ORD_NEW(["Mới / Tư vấn"]) -- "Chốt đơn" --> ORD_CONFIRM("Xác nhận đơn")
+        ORD_CONFIRM -- "Kiểm tra kho" --> ORD_PROD("Chờ sản xuất")
+        ORD_READY("Sẵn sàng giao") -- "Ship" --> ORD_DONE(["Hoàn tất"])
+    end
+
+    subgraph "XƯỞNG SẢN XUẤT (Object: Lệnh sản xuất)"
+        PRO_PLAN("Lập kế hoạch") -- "Tạo hình" --> PRO_SHAPE("Chuốt/Tạo hình")
+        PRO_SHAPE -- "Phơi" --> PRO_DRY("Phơi sấy")
+        PRO_DRY -- "Vẽ/Men" --> PRO_GLAZE("Tráng men/Vẽ")
+        PRO_GLAZE -- "Lò nung" --> PRO_FIRE("Nung lò")
+        PRO_FIRE -- "Kiểm tra" --> PRO_QC("Kiểm định (QC)")
+    end
+
+    subgraph "KHO & VẬT TƯ (Object: Tồn kho)"
+        WH_INV("Tồn kho nguyên vật liệu")
+        WH_FINISH("Kho thành phẩm")
+    end
+
+    %% Luồng thông tin kết nối (Message Flows)
+    ORD_PROD -.-> |"1. Kích hoạt SX"| PRO_PLAN
+    PRO_SHAPE -.-> |"2. Trừ đất/men"| WH_INV
+    PRO_QC -- "Đạt" --> WH_FINISH
+    WH_FINISH -.-> |"3. Báo có hàng"| ORD_READY
+
+    %% Styling
+    style ORD_NEW fill:#f9f,stroke:#333,stroke-width:2px
+    style PRO_QC fill:#00ff00,stroke:#333
+    style ORD_DONE fill:#f9f,stroke:#333,stroke-width:2px
+```
+
