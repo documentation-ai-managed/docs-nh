@@ -51,3 +51,37 @@ Nếu bạn gặp phải những vấn đề trên, dưới đây là cách LAIK
   "Trong các vấn đề nêu trên, đâu là **nỗi đau lớn nhất** đang kìm hãm sự tăng trưởng của anh/chị ngay lúc này?"
 </Callout>
 
+```mermaid
+erDiagram
+    direction LR
+    "TÀI KHOẢN" ||--o{ "KHÁCH HÀNG" : "thuộc về"
+    "KHÁCH HÀNG" ||--o{ "TƯƠNG TÁC" : "có"
+    "KHÁCH HÀNG" ||--o{ "CƠ HỘI" : "sở hữu"
+
+    "TÀI KHOẢN" {
+        int id PK
+        string ten_cong_ty "Tên doanh nghiệp"
+        string nganh_nghe
+    }
+
+    "KHÁCH HÀNG" {
+        int id PK
+        int tai_khoan_id FK
+        string ho_ten
+        string email UK
+    }
+
+    "TƯƠNG TÁC" {
+        int id PK
+        int khach_hang_id FK
+        string loai_hinh "Gọi điện/Email"
+        datetime ngay_gio
+    }
+
+    "CƠ HỘI" {
+        int id PK
+        float gia_tri
+        string trang_thai "Tiềm năng/Thắng/Thua"
+    }
+```
+
