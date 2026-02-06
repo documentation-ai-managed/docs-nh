@@ -234,3 +234,188 @@ graph TD
 
 ```
 
+```mermaid
+---
+config:
+  theme: neutral
+  layout: elk
+title: Thiên Phúc - CRM Khách sạn - Complete Workflow
+---
+flowchart TD
+ subgraph subGraph0["🧊︎ Đặt phòng"]
+        DAT_START(["Nhận đặt phòng từ OTA hoặc trực tiếp"])
+        DAT_DATA[("🧊︎ Đặt phòng")]
+        DAT_DATPHONGMOI("ĐẶT PHÒNG MỚI")
+        DAT_XACNHAN("XÁC NHẬN")
+        DAT_CHUANBI("CHUẨN BỊ")
+        DAT_CHECKIN_SANSANG("CHECK-IN SẴN SÀNG")
+        DAT_TUCHOI("TỪ CHỐI")
+        DAT_HUYBO("HỦY BỎ")
+        DAT_GW1{"Xác nhận<br>đặt phòng?"}
+        DAT_GW2{"Phòng<br>có sẵn?"}
+        DAT_END_SUCCESS(["Sẵn sàng cho check-in"])
+        DAT_END_CANCEL(["Đặt phòng bị từ chối hoặc hủy"])
+  end
+ subgraph subGraph1["🧊︎ Check-in/Check-out"]
+        CHK_START(["Tạo từ đặt phòng sẵn sàng"])
+        CHK_DATA[("🧊︎ Check-in/<br>Check-out")]
+        CHK_CHO_CHECKIN("CHỜ CHECK-IN")
+        CHK_DANG_LUUTRU("ĐANG LƯU TRÚ")
+        CHK_CHECKOUT_SOM("CHECK-OUT SỚM")
+        CHK_CHECKOUT("CHECK-OUT")
+        CHK_KHONG_DEN("KHÔNG ĐẾN")
+        CHK_HOANTHANH("HOÀN THÀNH")
+        CHK_GW1{"Khách<br>có đến?"}
+        CHK_GW2{"Check-out<br>đúng giờ?"}
+        CHK_END_SUCCESS(["Hoàn thành lưu trú"])
+        CHK_END_NOSHOW(["Khách không đến"])
+  end
+ subgraph subGraph2["🧊︎ Dịch vụ buồng phòng"]
+        DV_START(["Tạo từ yêu cầu chuẩn bị hoặc dọn phòng"])
+        DV_DATA[("🧊︎ Dịch vụ<br>buồng phòng")]
+        DV_CAN_DON("CẦN DỌN PHÒNG")
+        DV_DANG_DON("ĐANG DỌN")
+        DV_KIEMTRA("KIỂM TRA")
+        DV_CHUA_DAT("CHƯA ĐẠT")
+        DV_SANSANG("SẴN SÀNG")
+        DV_BAOTRI("BẢO TRÌ SỬA CHỮA")
+        DV_TAMDUNG("TẠM DỪNG")
+        DV_GW1{"Chất lượng<br>đạt?"}
+        DV_GW2{"Cần<br>bảo trì?"}
+        DV_END_SUCCESS(["Phòng sẵn sàng"])
+        DV_END_MAINTENANCE(["Cần bảo trì"])
+  end
+ subgraph subGraph3["🧊︎ Khách hàng"]
+        KH_START(["Tạo từ đặt phòng đầu tiên"])
+        KH_DATA[("🧊︎ Khách hàng")]
+        KH_KHACHMOI("KHÁCH MỚI")
+        KH_KHACHTHUONGXUYEN("KHÁCH THƯỜNG XUYÊN")
+        KH_KHACHVIP("KHÁCH VIP")
+        KH_KHACHTHANTHIET("KHÁCH THÂN THIẾT")
+        KH_GW1{"Số lần<br>lưu trú?"}
+        KH_GW2{"Tổng<br>chi tiêu?"}
+        KH_END_SUCCESS(["Khách thân thiết"])
+  end
+ subgraph subGraph4["🧊︎ Dịch vụ bổ sung"]
+        DBS_START(["Yêu cầu dịch vụ từ khách"])
+        DBS_DATA[("🧊︎ Dịch vụ<br>bổ sung")]
+        DBS_YEUCAU("YÊU CẦU DỊCH VỤ")
+        DBS_XACNHAN("XÁC NHẬN")
+        DBS_CHUANBI("CHUẨN BỊ")
+        DBS_THUCHIEN("THỰC HIỆN")
+        DBS_HOANTHANH("HOÀN THÀNH")
+        DBS_KHONG_KHADUNG("KHÔNG KHẢ DỤNG")
+        DBS_GW1{"Có thể<br>cung cấp?"}
+        DBS_END_SUCCESS(["Dịch vụ hoàn thành"])
+        DBS_END_UNAVAILABLE(["Không khả dụng"])
+  end
+    DAT_START --> DAT_DATPHONGMOI
+    DAT_DATPHONGMOI -- Xử lý đặt phòng --> DAT_GW1
+    DAT_GW1 -- Xác nhận thành công --> DAT_XACNHAN
+    DAT_GW1 -. Từ chối đặt phòng .-> DAT_TUCHOI
+    DAT_XACNHAN --> DAT_GW2
+    DAT_GW2 -- Có phòng --> DAT_CHUANBI
+    DAT_GW2 -. Hết phòng .-> DAT_HUYBO
+    DAT_CHUANBI -- Hoàn tất chuẩn bị --> DAT_CHECKIN_SANSANG
+    DAT_CHECKIN_SANSANG --> DAT_END_SUCCESS
+    DAT_TUCHOI --> DAT_END_CANCEL
+    DAT_HUYBO --> DAT_END_CANCEL
+    CHK_START --> CHK_CHO_CHECKIN
+    CHK_CHO_CHECKIN --> CHK_GW1
+    CHK_GW1 -- "Check-in thành công" --> CHK_DANG_LUUTRU
+    CHK_GW1 -. "Khách no-show" .-> CHK_KHONG_DEN
+    CHK_DANG_LUUTRU --> CHK_GW2
+    CHK_GW2 -- "Check-out đúng giờ" --> CHK_CHECKOUT
+    CHK_GW2 -. "Check-out sớm" .-> CHK_CHECKOUT_SOM
+    CHK_CHECKOUT -- Hoàn tất quy trình --> CHK_HOANTHANH
+    CHK_CHECKOUT_SOM -- "Xử lý check-out sớm" --> CHK_HOANTHANH
+    CHK_HOANTHANH --> CHK_END_SUCCESS
+    CHK_KHONG_DEN --> CHK_END_NOSHOW
+    DV_START --> DV_CAN_DON
+    DV_CAN_DON -- Bắt đầu dọn --> DV_DANG_DON
+    DV_DANG_DON -- Hoàn thành dọn --> DV_KIEMTRA
+    DV_DANG_DON -. Tạm dừng công việc .-> DV_TAMDUNG
+    DV_KIEMTRA --> DV_GW1 & DV_GW2
+    DV_GW1 -- Đạt tiêu chuẩn --> DV_SANSANG
+    DV_GW1 -. Chưa đạt tiêu chuẩn .-> DV_CHUA_DAT
+    DV_CHUA_DAT -. Dọn lại .-> DV_DANG_DON
+    DV_GW2 -. Cần bảo trì .-> DV_BAOTRI
+    DV_TAMDUNG -. Tiếp tục .-> DV_DANG_DON
+    DV_SANSANG --> DV_END_SUCCESS
+    DV_BAOTRI --> DV_END_MAINTENANCE
+    KH_START --> KH_KHACHMOI
+    KH_KHACHMOI --> KH_GW1
+    KH_GW1 -- "Lưu trú 2-5 lần" --> KH_KHACHTHUONGXUYEN
+    KH_KHACHTHUONGXUYEN --> KH_GW2
+    KH_GW2 -- Chi tiêu cao --> KH_KHACHVIP
+    KH_KHACHVIP -- Nhiều năm gắn bó --> KH_KHACHTHANTHIET
+    KH_KHACHTHANTHIET --> KH_END_SUCCESS
+    DBS_START --> DBS_YEUCAU
+    DBS_YEUCAU --> DBS_GW1
+    DBS_GW1 -- Có thể cung cấp --> DBS_XACNHAN
+    DBS_GW1 -. Không thể cung cấp .-> DBS_KHONG_KHADUNG
+    DBS_XACNHAN -- Chuẩn bị dịch vụ --> DBS_CHUANBI
+    DBS_CHUANBI -- Bắt đầu thực hiện --> DBS_THUCHIEN
+    DBS_THUCHIEN -- Hoàn thành dịch vụ --> DBS_HOANTHANH
+    DBS_HOANTHANH --> DBS_END_SUCCESS
+    DBS_KHONG_KHADUNG --> DBS_END_UNAVAILABLE
+    DAT_CHUANBI L_MF1@-. Chuẩn bị phòng .-> DV_START
+    DAT_CHECKIN_SANSANG L_MF2@-. "Tạo check-in" .-> CHK_START
+    DAT_XACNHAN L_MF3@-. Tạo dịch vụ đi kèm .-> DBS_START
+    DAT_DATPHONGMOI L_MF4@-. Tạo/cập nhật khách hàng .-> KH_START
+    CHK_CHECKOUT L_MF5@-. Tạo công việc dọn phòng .-> DV_START
+    CHK_HOANTHANH L_MF6@-. Cập nhật loyalty points .-> KH_GW1
+    DV_SANSANG L_MF7@-. Thông báo phòng sẵn sàng .-> DAT_CHECKIN_SANSANG
+    KH_KHACHVIP L_MF8@-. Tạo dịch vụ VIP .-> DBS_START
+    DBS_HOANTHANH L_MF9@-. Cập nhật sở thích .-> KH_GW2
+    WEBHOOK(["Webhook từ OTA"]) L_MF10@-. Đặt phòng từ OTA .-> DAT_START
+     DAT_DATPHONGMOI:::mo
+     DAT_XACNHAN:::hoatdong
+     DAT_CHUANBI:::hoatdong
+     DAT_CHECKIN_SANSANG:::hoanthanh
+     DAT_TUCHOI:::donghuy
+     DAT_HUYBO:::donghuy
+     CHK_CHO_CHECKIN:::kehoach
+     CHK_DANG_LUUTRU:::hoatdong
+     CHK_CHECKOUT_SOM:::hoatdong
+     CHK_CHECKOUT:::hoatdong
+     CHK_KHONG_DEN:::donghuy
+     CHK_HOANTHANH:::hoanthanh
+     DV_CAN_DON:::mo
+     DV_DANG_DON:::hoatdong
+     DV_KIEMTRA:::hoatdong
+     DV_CHUA_DAT:::tamdung
+     DV_SANSANG:::hoanthanh
+     DV_BAOTRI:::tamdung
+     DV_TAMDUNG:::tamdung
+     KH_KHACHMOI:::mo
+     KH_KHACHTHUONGXUYEN:::hoatdong
+     KH_KHACHVIP:::hoanthanh
+     KH_KHACHTHANTHIET:::hoanthanh
+     DBS_YEUCAU:::mo
+     DBS_XACNHAN:::hoatdong
+     DBS_CHUANBI:::hoatdong
+     DBS_THUCHIEN:::hoatdong
+     DBS_HOANTHANH:::hoanthanh
+     DBS_KHONG_KHADUNG:::donghuy
+    classDef mo fill:#F8F9FA,stroke:#64718B,stroke-width:2px,color:#213459
+    classDef kehoach fill:#E6FBFF,stroke:#33CCFF,stroke-width:2px,color:#213459
+    classDef hoatdong fill:#E8F4FF,stroke:#358AFF,stroke-width:2px,color:#213459
+    classDef tamdung fill:#FFF7ED,stroke:#FF7E46,stroke-width:2px,color:#213459
+    classDef hoanthanh fill:#E8FDF4,stroke:#1AD598,stroke-width:2px,color:#213459
+    classDef donghuy fill:#F8F9FA,stroke:#213459,stroke-width:2px,color:#213459
+    linkStyle 54 stroke:#FF6D00
+    linkStyle 59 stroke:#FF6D00,fill:none
+    L_MF1@{ animate: true } 
+    L_MF2@{ animate: true } 
+    L_MF3@{ animate: true } 
+    L_MF4@{ animate: true } 
+    L_MF5@{ animate: true } 
+    L_MF6@{ animate: true } 
+    L_MF7@{ animate: true } 
+    L_MF8@{ animate: true } 
+    L_MF9@{ animate: true, animation: fast } 
+    L_MF10@{ animate: true }
+
+```
+
