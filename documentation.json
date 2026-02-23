@@ -24,6 +24,10 @@
             "icon": "rocket",
             "pages": [
               {
+                "title": "22",
+                "path": "22"
+              },
+              {
                 "group": "Group",
                 "pages": [
                   {

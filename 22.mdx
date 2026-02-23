@@ -1,0 +1,124 @@
+---
+title: "Mastering Luklak Architecture"
+description: "A comprehensive guide to building unified business systems using Luklak's 3-layer architecture."
+icon: "layer-group"
+---
+
+Welcome to Luklak. Unlike traditional software that uses rigid, pre-built modules, Luklak uses a **3-Layer Unified Architecture**. This means you don't just "use" an app; you design how data, logic, and interface work together as a single organism.
+
+---
+
+## Part 1: The Foundation (Layer 1 — Data & Objects)
+
+<Note>**Goal:** Understand the "DNA" of your business data.</Note>
+
+Before you build a workflow, you must define what you are tracking. Everything in Luklak starts here.
+
+### 1. The Universal Object
+The **Universal Object** is the basic building block of Luklak. Whether it’s a "Task," a "Lead," or a "Legal Contract," it is fundamentally a Universal Object. 
+
+*   **Why it matters:** Because every piece of data is the same "type" at its core, different departments can finally talk to each other without complex integrations.
+
+### 2. Functions vs. Object Types
+*   **Functions (The Blueprint):** Think of a Function as a "Master Folder" or "Template" for a specific business module (e.g., a CRM Function or an HR Function).
+*   **Object Types (The Specifics):** Inside a Function, you define Object Types (e.g., "Standard Task" or "Sub-task").
+
+<Tip>
+**Best Practice**
+Always break down complex processes into **Standard** and **Sub-object** types. This keeps your data organized and allows for parent-child reporting.
+</Tip>
+
+### 3. Universal Query Language (UQL)
+UQL is the search engine of Luklak. It allows you to find and link data across different Functions instantly.
+
+*   **No-Code Mode:** Use a visual drag-and-drop interface to build filters.
+*   **Advanced Mode:** Use UQL scripting for complex data relationships.
+
+---
+
+## Part 2: The Brain (Layer 2 — Logic & Automation)
+
+<Note>**Goal:** Define how work moves and changes.</Note>
+
+Once your data is defined, you need to tell Luklak how to handle it. This layer uses the **Trigger–Condition–Action** framework.
+
+### 1. Automated Rule Types
+There are three ways to trigger an action in Luklak:
+
+<CardGroup cols={3}>
+  <Card title="Silent Rules" icon="ghost">
+    Run in the background. They listen for events (like field updates) or work on a schedule.
+  </Card>
+  <Card title="Workflow Rules" icon="route">
+    Trigger only when an object moves from one **Status** to another (e.g., "In Progress" to "Done").
+  </Card>
+  <Card title="Object Action Rules" icon="mouse-pointer">
+    "Manual" triggers that appear as buttons in the user's action menu.
+  </Card>
+</CardGroup>
+
+<Warning>
+**Technical Note**
+When setting up automation, be careful with "Action Chains." Ensure your rules don't create an infinite loop where Rule A triggers Rule B, which then triggers Rule A again.
+</Warning>
+
+### 2. Smart Values
+**Smart Values** allow your automation to be dynamic. Instead of just "updating a field," you can tell Luklak to calculate values on the fly.
+
+> *Example:* "Calculate the price by multiplying `Quantity` x `Unit Cost` from the parent object."
+
+---
+
+## Part 3: The Experience (Layer 3 — UI & Interaction)
+
+<Note>**Goal:** Design how users interact with the system.</Note>
+
+This is the "skin" of your application. Because Layers 1 and 2 are unified, the user experience is consistent everywhere.
+
+### 1. Spaces: Where Work Happens
+A **Space** is a "live instance" of a Function. If the Function is the blueprint for a house, the Space is the actual house where people live and work.
+
+### 2. Workviews & Dashboards
+*   **Workviews:** Daily tools for the team (List, Kanban, Calendar, Timeline).
+*   **Unified Dashboards:** High-level views for managers. Because of UQL, these dashboards are **"Live"**—you can click any chart to open the specific tasks behind the numbers.
+
+<Info>
+**User Experience Tip**
+Don't overwhelm users. Use **Screens** to show only the necessary fields for specific workflow statuses.
+</Info>
+
+---
+
+## Part 4: Implementation Path
+
+To build a functional system in Luklak, follow these steps in order:
+
+<Steps>
+  <Step title="Architect the Blueprint (Understanding)">
+    * Create a **Function**.
+    * Define your **Object Types** and their **Data Fields**.
+    * Map the **Workflow** (the lifecycle of statuses).
+  </Step>
+  <Step title="Power the Logic (Applying)">
+    * Add **Automation Rules** (Silent or Workflow).
+    * Implement **Smart Values** for calculations.
+    * Choose a **Permission Scheme** to control who sees what.
+  </Step>
+  <Step title="Launch the Experience (Evaluating)">
+    * Create a **Space** from your Function.
+    * Set up **Workviews** for the team.
+    * Build a **Dashboard** to track success.
+  </Step>
+</Steps>
+
+---
+
+### Quick Review: Bloom’s Checklist
+
+<Check>
+**Ready for Launch?**
+- [ ] **Remember:** Can you identify the difference between a Function and a Space?
+- [ ] **Understand:** Do you know which trigger to use for a status change?
+- [ ] **Apply:** Can you create a basic UQL filter to find "Overdue Tasks"?
+- [ ] **Create:** Are you ready to build your first cross-functional dashboard?
+</Check>
