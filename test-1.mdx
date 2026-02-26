@@ -159,6 +159,71 @@ graph TD
 
 Để workflow này hoạt động trơn tru, đối tượng **Customer** cần liên kết dữ liệu với các đối tượng khác như sau:
 
+```mermaid
+---
+config:
+  theme: neutral
+  layout: elk
+title: CRM Nha khoa - Lịch hẹn - Individual Workflow
+---
+flowchart TD
+
+    subgraph "LICH_HEN"
+        direction TB
+        BK_START(["Bắt đầu từ Lead/Khách cũ"])
+        BK_DATA[("Dữ liệu Lịch hẹn")]
+        
+        %% Statuses
+        BK_CHO_XN("CHỜ XÁC NHẬN")
+        BK_DA_XN("ĐÃ XÁC NHẬN")
+        BK_DA_DEN("ĐÃ ĐẾN")
+        BK_HEN_LAI("HẸN LẠI")
+        BK_NO_SHOW("KHÔNG ĐẾN")
+        BK_HUY("ĐÃ HỦY")
+        
+        %% Gateways
+        BK_GW1{"Xác nhận?"}
+        BK_GW2{"Đến đúng giờ?"}
+        
+        %% Flows
+        BK_START --> BK_CHO_XN
+        BK_CHO_XN --> BK_GW1
+        
+        BK_GW1 -- "Đồng ý" --> BK_DA_XN
+        BK_GW1 -- "Dời lịch" --> BK_HEN_LAI
+        BK_GW1 -- "Hủy" --> BK_HUY
+        
+        BK_HEN_LAI -- "Cập nhật" --> BK_CHO_XN
+        
+        BK_DA_XN --> BK_GW2
+        BK_GW2 -- "Có mặt" --> BK_DA_DEN
+        BK_GW2 -- "Vắng mặt" --> BK_NO_SHOW
+        
+        BK_DA_DEN --> BK_END_OK(["Sẵn sàng Check-in"])
+        BK_NO_SHOW --> BK_END_FAIL(["Kết thúc thất bại"])
+        BK_HUY --> BK_END_FAIL
+    end
+
+    %% External Connections
+    LED_CONVERTED(["Lead đã chuyển đổi"]) -.-> |"Tạo lịch"| BK_START
+    BK_DA_XN -.-> |"Đồng bộ"| HIS_SYS[("Hệ thống HIS")]
+    BK_DA_DEN -.-> |"Chuyển tiếp"| REC_START(["Tiếp đón"])
+
+    %% Styling
+    classDef mo fill:#F8F9FA,stroke:#64718B,stroke-width:2px,color:#213459
+    classDef kehoach fill:#E6FBFF,stroke:#33CCFF,stroke-width:2px,color:#213459
+    classDef hoatdong fill:#E8F4FF,stroke:#358AFF,stroke-width:2px,color:#213459
+    classDef tamdung fill:#FFF7ED,stroke:#FF7E46,stroke-width:2px,color:#213459
+    classDef hoanthanh fill:#E8FDF4,stroke:#1AD598,stroke-width:2px,color:#213459
+    classDef donghuy fill:#F8F9FA,stroke:#213459,stroke-width:2px,color:#213459
+
+    class BK_CHO_XN mo
+    class BK_DA_XN kehoach
+    class BK_DA_DEN hoanthanh
+    class BK_HEN_LAI tamdung
+    class BK_NO_SHOW,BK_HUY donghuy
+```
+
 | Đối tượng liên quan    | Loại liên kết  | Mục đích kinh doanh                                                 |
 | ---------------------- | -------------- | ------------------------------------------------------------------- |
 | **Marketing Campaign** | Nguồn (Source) | Để biết khách hàng này đến từ quảng cáo nào (Tính ROI Marketing).   |
@@ -170,7 +235,7 @@ graph TD
   **Mẹo quản trị:** Hãy sử dụng **Workview "My Active Customers"** để Sales chỉ nhìn thấy những khách hàng họ đang phụ trách, tránh việc tranh chấp khách hàng (Trùng Lead).
 </Callout>
 
-<Image src="https://blob-cdn.documentation.ai/org-fa384318-be3c-497b-8039-8f4229963c36/doc-b3b056b6-4951-4fa4-9c58-89e30e083f13/1770703640758-2tj4idwes3-pasted-image-1770703638798.png?q=85&fm=auto&auto=compress%2Cformat" width="1670" height="2158" alt="" />
+<Image src="https://blob-cdn.documentation.ai/org-fa384318-be3c-497b-8039-8f4229963c36/doc-b3b056b6-4951-4fa4-9c58-89e30e083f13/1770703640758-2tj4idwes3-pasted-image-1770703638798.png?q=85&fm=auto&auto=compress%2Cformat" width="1670" height="2158" alt="" style="width: 1670px; height: auto; cursor: pointer;" />
 
 ```mermaid wrap="true"
 graph TD
@@ -237,8 +302,6 @@ graph TD
     end
 
 ```
-
-/
 
 ```mermaid
 ---
@@ -425,3 +488,4 @@ flowchart TD
 
 ```
 
+[View on Eraser](https://app.eraser.io/workspace/PyjRjHIETEC8gqjNwyeS?diagram=J8-WqjuhcjGmG9wvuQNMO)
