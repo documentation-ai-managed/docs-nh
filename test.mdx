@@ -1,0 +1,204 @@
+---
+title: "Villa Operations System Blueprint"
+description: "Technical specification and implementation guide for the Villa Tourism & Operations system on Luklak."
+icon: "hotel"
+---
+
+## Overview
+
+This document provides the complete technical blueprint for the **Du Lịch và Vận Hành Villa** (Villa Tourism & Operations) system. Designed for the Luklak platform, this configuration centralizes property management, guest relations, operational workflows, and financial integrity.
+
+## Visual Architecture
+
+### Entity Relationship Diagram (ERD)
+The following diagram illustrates the data structure and connectivity between core entities within the system.
+
+```mermaid
+erDiagram
+    OWNER ||--o{ VILLA : "manages"
+    VILLA ||--o{ BOOKING : "hosts"
+    CUSTOMER ||--o{ BOOKING : "places"
+    BOOKING ||--o{ TRANSACTION : "records"
+    BOOKING ||--o{ TASK : "requires"
+    VILLA ||--o{ MAINTENANCE : "undergoes"
+
+    VILLA {
+        string name
+        string code
+        float base_price
+        string status
+    }
+
+    BOOKING {
+        datetime check_in
+        datetime check_out
+        float total_amount
+        float paid_amount_formula
+        string status
+    }
+
+    CUSTOMER {
+        string full_name
+        string phone_unique
+        string email
+        string source
+        string rank_formula
+    }
+
+    TRANSACTION {
+        string type_thu_chi
+        float amount
+        file evidence
+        string status
+    }
+
+    TASK {
+        string title
+        string assignee
+        datetime deadline
+        string status_progress
+    }
+
+    MAINTENANCE {
+        string issue
+        file photos
+        float cost
+        string priority
+    }
+
+    OWNER {
+        string name
+        string contact_phone
+        float commission_percent
+    }
+
+    INVENTORY {
+        string item_name
+        int stock_level
+        int min_threshold
+        string unit
+    }
+```
+
+---
+
+## Data Model
+
+### Entity Definitions & Attribute Map
+This schema ensures all metadata, from room counts to financial entries, is captured accurately.
+
+| Entity | Technical Name | Key Attributes (Type) | Notes |
+| :--- | :--- | :--- | :--- |
+| **Villa** | `villa` | Name (Text), Code (Text), Owner (Link), Base Price (Currency), Status (Select) | Metadata: Room Count, Amenities. |
+| **Booking** | `booking` | Villa (Link), Customer (Link), Check-in/Out (DateTime), Total (Currency), Paid (Formula), Status (Select) | The central "Event" entity. |
+| **Customer** | `customer` | Full Name (Text), Phone (**Unique**), Email (Email), Source (Select), Rank (Formula) | Prevents duplicates via Phone Number. |
+| **Transaction**| `transaction` | Booking (Link), Type (Thu/Chi), Amount (Currency), Evidence (File), Status (Select) | All cash flow entries. |
+| **Task** | `task` | Title (Text), Assignee (User), Deadline (DateTime), Booking (Link), Status (Progress) | Cleaning, Check-in, etc. |
+| **Maintenance**| `maintenance` | Villa (Link), Issue (Long Text), Photos (File), Cost (Currency), Priority (Select) | Damage reporting from the field. |
+| **Inventory** | `inventory` | Item Name (Text), Stock Level (Number), Min Threshold (Number), Unit (Select) | Consumables management. |
+| **Owner** | `owner` | Name (Text), Contact (Phone), Commission % (Percent), Linked Villas (Link) | Profit-sharing and reporting. |
+
+### Connection Logic
+1.  **Villa ↔ Booking (1:N):** Drives the **Calendar View** (Villa = Y-axis, Date = X-axis).
+2.  **Booking ↔ Transaction (1:N):** Rolls up multiple payments (Deposit + Final) to calculate `Total Paid`.
+3.  **Booking ↔ Task (1:N):** Tracks operational fulfillment for specific reservations.
+4.  **Villa ↔ Maintenance (1:N):** Tracks the lifecycle and "Health History" of assets.
+5.  **Owner ↔ Villa (1:N):** Aggregates revenue for investor reporting.
+
+---
+
+## Automation & Logic
+
+### Business Logic Formulas
+| Target Field | Formula Logic |
+| :--- | :--- |
+| **Paid Amount** | `SUM(links.transaction.amount WHERE status == 'Verified' AND type == 'Thu')` |
+| **Remaining Balance**| `total_amount - paid_amount` |
+| **Payment QR** | `https://img.vietqr.io/image/bank-account-template.jpg?amount={amount}&addInfo={booking_id}` |
+
+<Info>
+  **Auto-Status Update:** If `remaining_balance <= 0`, the system automatically updates `Booking.Status` to "Fully Paid".
+</Info>
+
+### Automation Flows
+The following sequence diagram detail how Luklak orchestrates tasks and notifications across departments.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    title Villa Operations - Automation Flows
+
+    actor Staff as Staff/User
+    
+    box rgba(255, 255, 255, 0.5) Luklak System
+        participant BKG as Booking
+        participant TSK as Task
+        participant TXN as Transaction
+        participant MNT as Maintenance
+        participant VLA as Villa
+        participant SCH as Scheduler
+    end
+
+    actor HKP as Housekeeping
+    actor SAL as Sale Agent
+    actor MGR as Villa Manager
+    actor CUST as Customer
+
+    Note over Staff, CUST: Scenario 1: Booking Confirmed
+    Staff ->>+ BKG: Create Booking (Status: Confirmed)
+    BKG -->>+ TSK: Auto-create "Pre-stay Cleaning"
+    TSK ->> HKP: Notify Housekeeping
+    BKG -->>+ TSK: Auto-create "Check-in Prep"
+    deactivate TSK
+
+    Note over Staff, CUST: Scenario 2: Payment Received
+    Staff ->>+ TXN: Add Transaction (Type: Thu)
+    TXN -->>+ BKG: Update Paid_Amount & Balance
+    TXN -->>+ SAL: Push Notification: Payment Verified
+    deactivate TXN
+
+    Note over Staff, CUST: Scenario 3: High Priority Maintenance
+    Staff ->>+ MNT: Report Damage (Priority: High)
+    MNT -->>+ VLA: Set Status: "Under Maintenance"
+    MNT -->>+ MGR: Alert Manager for urgent fix
+    deactivate MNT
+
+    Note over Staff, CUST: Scenario 4: Post-Stay Engagement
+    SCH -->>+ BKG: Trigger on Check-out Date
+    BKG -->>+ CUST: Send Automated WhatsApp/Zalo Feedback Link
+    deactivate CUST
+```
+
+---
+
+## Operations & Security
+
+### Dashboard Layouts
+*   **Management (Web):** Occupancy heatmaps, revenue charts (Thu vs Chi), and task burndown widgets.
+*   **Mobile App (Operational):** "My Tasks" (filtered by user) and a "Quick Report" button for maintenance.
+*   **Owner Portal:** Financial summaries showing net payout after commission deductions.
+
+### Permission Matrix
+| Role | Villa | Booking | Transaction | Maintenance | Inventory |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Admin** | CRUD | CRUD | CRUD | CRUD | CRUD |
+| **Sales** | View | CRUD | Create (Thu) | View | View |
+| **Operations**| View | View | Create (Chi) | CRUD | RU |
+| **Owner** | View* | View* | View* | View* | None |
+
+<Note>
+  **Row-Level Security:** Owners are restricted via filters to only see records where `Villa.Owner` matches their User Profile.
+</Note>
+
+### Technical Safeguards
+<Warning>
+  **Duplicate Prevention:** A validation rule on the `Customer` entity blocks record creation if the `phone_number` already exists.
+</Warning>
+
+<Info>
+  **Mandatory Evidence:** The `Evidence` (File) field is required for any `Transaction` marked as "Expenditure (Chi)" to ensure financial accountability.
+</Info>
+
+<Tip>
+  **Audit Logs:** History tracking must be enabled on the `Booking.Status` field to maintain a transparent record of price and date changes.
+</Tip>
