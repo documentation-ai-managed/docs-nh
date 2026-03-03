@@ -84,6 +84,43 @@ erDiagram
 
 ---
 
+<CodeGroup default-tab="0" show-lines="true" tabs={[]}>
+  ```mermaid
+  sequenceDiagram
+      autonumber
+      title Sales & Growth - LUKLAK SYSTEM - Level 1: Cross-System Flow
+
+      actor NVN as 👤 Nhân viên Sales
+      participant LUK as 🧊 Hệ thống Luklak
+      participant TEL as 📞 Tổng đài (Stringee/3CX)
+      participant AIS as 🤖 AI Processing Service
+
+      Note over NVN, LUK: Quy trình 1: Gọi điện & Trợ lý AI (CS-05, CS-06)
+      NVN->>LUK: [THAO TÁC]<br/>→ Bấm nút "Gọi" trên hồ sơ khách
+      activate LUK
+      LUK-->>TEL: [TRIGGER]<br/>→ Gửi yêu cầu Click-to-call (API)
+      deactivate LUK
+      activate TEL
+      TEL->>NVN: [PHẢN HỒI]<br/>→ Đổ chuông máy nhánh (Softphone)
+      TEL->>NVN: [KẾT NỐI]<br/>→ Đàm thoại với Khách hàng
+      NVN->>TEL: [THAO TÁC]<br/>→ Kết thúc cuộc gọi
+      TEL-->>LUK: [TRIGGER]<br/>→ Gửi Webhook: File ghi âm & Metadata
+      deactivate TEL
+      activate LUK
+      LUK-->>AIS: [TRIGGER]<br/>→ Gửi Audio để xử lý AI
+      deactivate LUK
+      activate AIS
+      AIS-->>LUK: [TRIGGER]<br/>→ Trả về Văn bản tóm tắt & Cảm xúc
+      deactivate AIS
+      
+      Note over LUK, NVN: Quy trình 2: Thu hồi Lead tự động (IC-10)
+      loop Mỗi 15 phút
+          LUK-->>LUK: [SCHEDULE]<br/>→ Quét Lead (Mới & >2h)
+          LUK->>NVN: [THÔNG BÁO]<br/>→ Thu hồi Lead về kho chung
+      end
+  ```
+</CodeGroup>
+
 ## Data Model
 
 ### Entity Definitions & Attribute Map
